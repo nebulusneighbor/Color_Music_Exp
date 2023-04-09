@@ -1,6 +1,7 @@
 import random
 import json
 from psychopy import visual, core, event
+import csv
 
 # Load the dictionary from the JSON file
 with open("melodies_data.json", "r") as json_file:
@@ -34,6 +35,10 @@ def main():
     complexity_range = 1
     num_trials = 0
     num_correct_trials = 0
+    exit_experiment = False
+    
+    # Initialize the list to store the results
+    results = []
 
     while True:
         prompt = get_prompt_by_complexity_range(complexity_range, complexity_range + 1, prompts)
@@ -49,8 +54,12 @@ def main():
         while len(response) < len(prompt):
             key = event.waitKeys(keyList=['1', '2', '3', '4', '5', 'escape'])
             if key[0] == 'escape':
+                exit_experiment = True
                 break
             response.extend(key)
+        
+        if exit_experiment:
+            break
 
         if 'escape' in response:
             break
@@ -71,6 +80,26 @@ def main():
             # Reset the trials count and correct trials count
             num_trials = 0
             num_correct_trials = 0
+         # Save the result of this trial
+       
+        result = {
+            'prompt': prompt,
+            'response': ''.join(response),
+            'correct_keys': correct_keys,
+            'complexity_range': complexity_range
+        }
+        results.append(result)
+
+        ...
+
+    # Write the results to a CSV file
+    with open('results.csv', 'w', newline='') as csvfile:
+        fieldnames = ['prompt', 'response', 'correct_keys', 'complexity_range']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for result in results:
+            writer.writerow(result)
+
 
     win.close()
     core.quit()
