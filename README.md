@@ -1,5 +1,6 @@
 # Color_Music_Exp
-Stair case method in psychopy for  measuring effects 
+Stair case method in psychopy for  measuring effects
+Python 3.8
 
 Create conda environment with:
 1. psychopy
