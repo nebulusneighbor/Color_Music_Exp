@@ -1,0 +1,8 @@
+MIDIUtil
+midi2audio
+music21
+mido
+numpy 
+pandas
+matplotlib
+seaborn
