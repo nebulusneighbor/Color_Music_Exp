@@ -67,7 +67,7 @@ then, establish all the requirements by following the above process.
 
 ***Creating New Environment with the Following***
 
-Python 3.8
+Python 3.8, (3.10 has posed issues on some machines)
 
 Create a conda environment with: `requirements.txt`
 ---
