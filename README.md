@@ -70,6 +70,10 @@ then, establish all the requirements by following the above process.
 Python 3.8, (3.10 has posed issues on some machines)
 
 Create a conda environment with: `requirements.txt`
+
+```bash
+pip install -r requirements.txt
+```
 ---
 
 
