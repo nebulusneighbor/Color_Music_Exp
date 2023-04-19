@@ -30,7 +30,7 @@ def get_correct_key_presses(target, response):
 
 def main():
     # Create a window
-    win = visual.Window(size=(1920, 1080), color='white', fullscr=True) # OG (800,600), fullscr=False
+    win = visual.Window(color='white', fullscr=True) # OG (800,600), fullscr=False
 
     complexity_range = 1
     num_trials = 0
