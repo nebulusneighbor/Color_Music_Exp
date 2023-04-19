@@ -1,5 +1,6 @@
-import mido
+import rtmidi
 import keyboard
+import time
 
 # Map MIDI note numbers to ASCII key codes
 note_to_key = {
@@ -26,22 +27,38 @@ note_to_key = {
 }
 
 def on_message(msg):
-    if msg.type == 'note_on' and msg.velocity > 0:
-        key = note_to_key.get(msg.note)
+    if msg[0] == 144 and msg[2] > 0:  # note_on event
+        print("Received MIDI note:", msg[1])  # Print the received MIDI note
+        key = note_to_key.get(msg[1])
         if key:
-            keyboard.press(key)
-            keyboard.release(key)
+            print("Mapped to key:", key)  # Print the mapped key
+            keyboard.press_and_release(key)
+            time.sleep(0.1)
 
-# Get the input MIDI port
-input_port = mido.open_input()
+midi_in = rtmidi.MidiIn()
+ports = midi_in.get_ports()
+
+if not ports:
+    print("No MIDI input ports available. Exiting.")
+    exit(1)
+
+print("Available MIDI input ports:")
+for i, port in enumerate(ports):
+    print(f"[{i}] {port}")
+
+port_idx = int(input("Select the MIDI input port index: "))
+
+midi_in.open_port(port_idx)
 
 print("Listening for MIDI input. Press Ctrl+C to exit.")
 try:
-    for msg in input_port:
-        on_message(msg)
+    while True:
+        msg = midi_in.get_message()
+        if msg:
+            on_message(msg[0])
+        time.sleep(0.001)
 except KeyboardInterrupt:
     pass
 
-# Close the input MIDI port
-input_port.close()
+midi_in.close_port()
 print("Closed MIDI input.")
