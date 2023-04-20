@@ -80,7 +80,7 @@ def main():
                 response.extend(key)
                 
             win.flip()
-            core.wait(3.0)
+            core.wait(2.0)
                 
         
         if exit_experiment:
