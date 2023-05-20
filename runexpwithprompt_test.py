@@ -17,11 +17,19 @@ for key, value in melodies_data.items():
         'complexity': value['complexity']
     }
 
-def get_prompt_by_complexity_range(min_complexity, max_complexity, prompts):
+#Define complexity range
+max_complexity = max(value['complexity'] for value in melodies_data.values())
+complexity_increment = max_complexity / 15
+
+def get_prompt_by_complexity_level(level, prompts, complexity_increment):
+    min_complexity = complexity_increment * (level - 1)
+    max_complexity = complexity_increment * level
+
     filtered_prompts = [
         key for key, value in prompts.items()
-        if min_complexity <= value['complexity'] <= max_complexity
+        if min_complexity <= value['complexity'] < max_complexity
     ]
+
     if filtered_prompts:
         return random.choice(filtered_prompts)
     else:
@@ -46,12 +54,20 @@ def main():
     num_correct_trials = 0
     exit_experiment = False
 
+    #create results array
     results = []
 
+    #Start coimplexity level
+    complexity_level = 1
+
     while True:
-        prompt = get_prompt_by_complexity_range(complexity_range, complexity_range + 1, prompts)
+        prompt = get_prompt_by_complexity_level(complexity_level, prompts, complexity_increment)
+
         if not prompt:
-            break
+            complexity_level += 1
+            if complexity_level > 15:
+                break
+            continue
 
         msg_stim.draw()
         win.flip()
@@ -98,9 +114,10 @@ def main():
         if num_trials >= 5:
             accuracy = num_correct_trials / num_trials
             if accuracy >= 0.8:
-                complexity_range += 1
+                complexity_level += 1
             else:
-                complexity_range = max(1, complexity_range - 1)
+                complexity_level = max(1, complexity_level - 1)
+            
             num_trials = 0
             num_correct_trials = 0
 
@@ -112,7 +129,7 @@ def main():
             'prompt': prompt,
             'response': ''.join(response),
             'correct_keys': correct_keys,
-            'complexity_range': complexity_range,
+            'complexity_level': complexity_level,
             'rest_time': rest_time,
             'time_to_start': time_to_start,
             'key_timestamps': key_timestamps,
@@ -123,11 +140,10 @@ def main():
 
     end_time = time.time()
     total_time_taken = end_time - start_time
-    return total_time_taken
 
     # Write the results to a CSV file
     with open('results.csv', 'w', newline='') as csvfile:
-        fieldnames = ['prompt', 'response', 'correct_keys', 'complexity_range', 'rest_time', 'time_to_start', 'key_timestamps','total_time_taken']
+        fieldnames = ['prompt', 'response', 'correct_keys', 'complexity_level', 'rest_time', 'time_to_start', 'key_timestamps','total_time_taken']
         writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
         writer.writeheader()
         for result in results:
@@ -135,6 +151,8 @@ def main():
 
     win.close()
     core.quit()
+    
+    return total_time_taken
 
 
 if __name__ == "__main__":
