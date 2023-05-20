@@ -104,6 +104,9 @@ def main():
             num_trials = 0
             num_correct_trials = 0
 
+        end_time = time.time()
+        total_time_taken = end_time - start_time
+
 
         result = {
             'prompt': prompt,
@@ -112,24 +115,26 @@ def main():
             'complexity_range': complexity_range,
             'rest_time': rest_time,
             'time_to_start': time_to_start,
-            'key_timestamps': key_timestamps
+            'key_timestamps': key_timestamps,
+            'total_time_taken': total_time_taken  
         }
         results.append(result)
 
-        end_time = time.time()
-        total_time_taken = end_time - start_time
-        return total_time_taken
 
-        # Write the results to a CSV file
-        with open('results.csv', 'w', newline='') as csvfile:
-            fieldnames = ['prompt', 'response', 'correct_keys', 'complexity_range', 'rest_time', 'time_to_start', 'key_timestamps']
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            for result in results:
-                writer.writerow(result)
+    end_time = time.time()
+    total_time_taken = end_time - start_time
+    return total_time_taken
 
-        win.close()
-        core.quit()
+    # Write the results to a CSV file
+    with open('results.csv', 'w', newline='') as csvfile:
+        fieldnames = ['prompt', 'response', 'correct_keys', 'complexity_range', 'rest_time', 'time_to_start', 'key_timestamps','total_time_taken']
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        for result in results:
+            writer.writerow(result)
+
+    win.close()
+    core.quit()
 
 
 if __name__ == "__main__":
