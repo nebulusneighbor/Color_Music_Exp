@@ -60,13 +60,21 @@ def main():
     #Start coimplexity level
     complexity_level = 1
 
+    # Counter for max complexity encounters
+    max_complexity_counter = 0
+
     while True:
         prompt = get_prompt_by_complexity_level(complexity_level, prompts, complexity_increment)
 
         if not prompt:
             complexity_level += 1
-            if complexity_level > 15:
-                break
+
+            # Check if the complexity_level has reached the max
+            if complexity_level >= 15:
+                complexity_level = 15  # Reset complexity level back to max
+                max_complexity_counter += 1
+                if max_complexity_counter >= 15:  # Exits the program when the participant encounters 15 samples at max complexity
+                    break
             continue
 
         msg_stim.draw()
@@ -117,7 +125,7 @@ def main():
                 complexity_level += 1
             else:
                 complexity_level = max(1, complexity_level - 1)
-            
+
             num_trials = 0
             num_correct_trials = 0
 
@@ -133,7 +141,7 @@ def main():
             'rest_time': rest_time,
             'time_to_start': time_to_start,
             'key_timestamps': key_timestamps,
-            'total_time_taken': total_time_taken  
+            'total_time_taken': total_time_taken
         }
         results.append(result)
 
@@ -151,7 +159,7 @@ def main():
 
     win.close()
     core.quit()
-    
+
     return total_time_taken
 
 
