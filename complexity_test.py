@@ -25,17 +25,33 @@ def get_prompt_by_complexity_level(level, prompts, complexity_increment):
     min_complexity = complexity_increment * (level - 1)
     max_complexity = complexity_increment * level
     print(min_complexity)##DEBUG
-    print(max_complexity)
+    print(max_complexity)##DEBUG
 
-    filtered_prompts = [
-        key for key, value in prompts.items()
-        if min_complexity <= value['complexity'] < max_complexity
-    ]
+    if level == 15:  # If the current level is the maximum
+        filtered_prompts = [
+            key for key, value in prompts.items()
+            if min_complexity <= value['complexity'] <= max_complexity  # Notice the "<=" instead of "<"
+        ]
+    else:
+        filtered_prompts = [
+            key for key, value in prompts.items()
+            if min_complexity <= value['complexity'] < max_complexity
+        ]
 
     if filtered_prompts:
         return random.choice(filtered_prompts), level == 15
     else:
         return None, level == 15
+
+    # filtered_prompts = [
+    #     key for key, value in prompts.items()
+    #     if min_complexity <= value['complexity'] < max_complexity
+    # ]
+
+    # if filtered_prompts:
+    #     return random.choice(filtered_prompts), level == 15
+    # else:
+    #     return None, level == 15
 
 # #DEBUG
 # print(max_complexity)
@@ -81,7 +97,8 @@ def main():
                     break
 
         if not prompt:  # If no prompt was found, it means max complexity was reached and there were no available prompts
-            continue  # So, continue to the next iteration of the outer loop
+            print("No available prompts at complexity level", complexity_level) # Print a message indicating that there are no available prompts at this complexity level
+            break  # Break the outer loop and end the experiment
 
         # If the complexity_level has reached the max, increment max_complexity_counter
         if max_complexity_reached:
