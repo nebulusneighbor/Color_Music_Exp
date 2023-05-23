@@ -43,19 +43,6 @@ def get_prompt_by_complexity_level(level, prompts, complexity_increment):
     else:
         return None, level == 15
 
-    # filtered_prompts = [
-    #     key for key, value in prompts.items()
-    #     if min_complexity <= value['complexity'] < max_complexity
-    # ]
-
-    # if filtered_prompts:
-    #     return random.choice(filtered_prompts), level == 15
-    # else:
-    #     return None, level == 15
-
-# #DEBUG
-# print(max_complexity)
-# print(complexity_increment)
 
 def get_correct_key_presses(target, response):
     return sum([1 for t, r in zip(target, response) if t == r])
