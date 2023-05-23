@@ -120,8 +120,19 @@ def main():
             response = []
             key_timestamps = []
             trial_clock = Clock()  # Start the timer
+            time_limit_exceeded = False  # Initialize the variable as False
 
-            while len(response) < len(prompt):
+            while len(response) < len(prompt) and not time_limit_exceeded:  # Add the time_limit_exceeded condition here
+                keys = event.getKeys(keyList=['1', '2', '3', '4', '5', 'escape'], timeStamped=trial_clock)
+                
+                for key in keys:
+                    if key[0] == 'escape':
+                        exit_experiment = True
+                        time_limit_exceeded = True  # also break the loop when escape is pressed
+                        break
+
+                    response.append(key[0])
+                    key_timestamps.append(key[1])
 
                 if trial_clock.getTime() > 20:  # If more than 20 seconds have passed
                     msg_stim.setText("Time ran out! Complete the next one a little faster")  # Set the message
@@ -129,14 +140,10 @@ def main():
                     win.flip()
                     core.wait(3.0)  # Show the message for 3 seconds
                     new_complexity_level = max(1, complexity_level - 1)  # Lower complexity level
-                    break  # Exit the loop, effectively moving to the next prompt
+                    time_limit_exceeded = True  # Set the variable to True
+                    # Skip the rest of the loop, we will exit on the next iteration
 
-                key = event.waitKeys(keyList=['1', '2', '3', '4', '5', 'escape'], timeStamped=True)
-                if key[0][0] == 'escape':
-                    exit_experiment = True
-                    break
-                response.extend(key[0][0])
-                key_timestamps.append(key[0][1])
+                core.wait(0.01)  # short delay to prevent maxing out CPU usage
 
             time_to_start_end = key_timestamps[0] if key_timestamps else time.time()
             time_to_start = time_to_start_end - time_to_start_start
@@ -144,6 +151,8 @@ def main():
 
             win.flip()
             core.wait(1.0)
+
+            msg_stim.setText(task_msg)  # Reset the message text
 
         if exit_experiment:
             break
