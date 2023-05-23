@@ -3,6 +3,8 @@ import json
 from psychopy import visual, core, event, monitors, gui
 import csv
 import time
+from psychopy.clock import Clock
+
 
 
 # Load the dictionary from the JSON file
@@ -106,6 +108,8 @@ def main():
         num_trials = 0
         num_correct_trials = 0
 
+        msg_stim.setText(task_msg)  # Reset the message text
+
         if 'space' in keys:
             time_to_start_start = time.time()
 
@@ -115,7 +119,18 @@ def main():
 
             response = []
             key_timestamps = []
+            trial_clock = Clock()  # Start the timer
+
             while len(response) < len(prompt):
+
+                if trial_clock.getTime() > 20:  # If more than 20 seconds have passed
+                    msg_stim.setText("Time ran out! Complete the next one a little faster")  # Set the message
+                    msg_stim.draw()
+                    win.flip()
+                    core.wait(3.0)  # Show the message for 3 seconds
+                    new_complexity_level = max(1, complexity_level - 1)  # Lower complexity level
+                    break  # Exit the loop, effectively moving to the next prompt
+
                 key = event.waitKeys(keyList=['1', '2', '3', '4', '5', 'escape'], timeStamped=True)
                 if key[0][0] == 'escape':
                     exit_experiment = True
