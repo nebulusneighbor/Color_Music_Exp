@@ -161,7 +161,7 @@ def main():
             'prompt': prompt,
             'response': ''.join(response),
             'correct_keys': correct_keys,
-            'complexity_level': new_complexity_level,
+            'complexity_level': complexity_level,
             'rest_time': rest_time,
             'time_to_start': time_to_start,
             'key_timestamps': key_timestamps,
